@@ -48,3 +48,11 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+
+data/raw/
+data/panel/
+*.zip
+*.mdb
+*.accdb
+/.quarto/
