@@ -3,7 +3,7 @@
 # Run from the repo root: source("R/01_clean_roll.R")
 
 zip_dir <- "data/raw"
-out_dir <- "data/panel"
+out_dir <- "data/cleaned"
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 # 1-based positions.
@@ -17,9 +17,19 @@ old_idx <- c(
 )
 
 fy_from_name <- function(path) {
-  hit <- regmatches(path, regexpr("(19|20)[0-9]{2}", path))
-  if (!length(hit)) stop("No fiscal year in ", path, call. = FALSE)
-  hit
+  name <- basename(path)
+  if (grepl("fy[0-9]{2}", name, ignore.case = TRUE)) {
+    yy <- as.integer(sub(".*fy([0-9]{2}).*", "\\1", name, ignore.case = TRUE))
+    return(as.character(2000 + yy))
+  }
+  hit <- regmatches(name, regexpr("(19|20)[0-9]{2}", name))
+  if (length(hit)) return(hit)
+  hit2 <- regmatches(name, regexpr("tc1_([0-9]{2})", name, perl = TRUE))
+  if (length(hit2)) {
+    yy <- as.integer(sub("tc1_", "", hit2))
+    return(as.character(2000 + yy))
+  }
+  NA_character_
 }
 
 read_roll <- function(path) {
@@ -43,7 +53,7 @@ clean_one <- function(d, fy) {
   out$taxclass <- trimws(out$taxclass)
   out <- out[out$taxclass %in% c("1", "1A", "1B", "1C"), ]
   for (col in c("block", "lot", "mkt_land", "mkt_total", "act_land", "act_total")) {
-    out[[col]] <- as.integer(out[[col]])
+    out[[col]] <- as.numeric(out[[col]])
   }
   out[c("fy", "boro", "block", "lot", "taxclass", "mkt_land", "mkt_total", "act_land", "act_total")]
 }
@@ -59,7 +69,9 @@ for (z in zips) {
   if (!length(inner)) stop("No text file inside ", z, call. = FALSE)
   
   fy <- fy_from_name(basename(z))
-  d <- clean_one(read_roll(inner[1]), fy)
+  raw <- read_roll(inner[1])
+  if (is.na(fy)) fy <- unique(trimws(raw[[8]]))[1]
+  d <- clean_one(raw, fy)
   out <- file.path(out_dir, sprintf("class1_%s.csv", fy))
   write.csv(d, out, row.names = FALSE)
   message("wrote ", out, " (", nrow(d), " rows)")
