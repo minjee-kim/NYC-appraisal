@@ -16,26 +16,18 @@ The censored outcome is the unobserved appraisal update. It is not imputed from 
 
 ## Model
 
-Let \(P_t\) be the latent building price, \(A_t^\*\) the appraisal that would have been filed without the cap, and \(A_t\) the appraisal on the roll. Land value is \(L_t\). A sale \(S_t\) is observed only when the lot transacts.
+Let $P_t$ be the latent building price, $A_t^\*$ the appraisal that would have been filed without the cap, and $A_t$ the appraisal on the roll. Land value is $L_t$. A sale $S_t$ is observed only when the lot transacts.
 
-\[
-P_t = P_{t-1} + w_t
-\]
+$$
+P_t = P_{t-1} + w_t \\
 
-\[
-A_t^\* = \alpha P_t + (1-\alpha) A_{t-1} + e_t
-\]
+A_t^\* = \alpha P_t + (1-\alpha) A_{t-1} + e_t \\
 
-\[
-A_t = \min(A_t^\*, c_t)
-\]
+A_t = \min(A_t^\*, c_t) \\
 
-\[
-L_t = P_t + u_t
-\]
+L_t = P_t + u_t \\
 
-\[
 S_t = P_t + v_t \quad \text{when the building sells}
-\]
+$$
 
-\(c_t\) is the cap. \(\alpha\) is the share of the gap the appraisal closes. When \(A_t = c_t\), the observation is an inequality, \(A_t^\* \ge c_t\), not a point. The filter estimates \(P_t\) and the censored \(A_t^\*\) from the land measurement and from \(S_t\).
+$c_t$ is the cap. $\alpha$ is the share of the gap the appraisal closes. When $A_t = c_t$, the observation is an inequality, $A_t^\* \ge c_t$, not a point. The filter estimates $P_t$ and the censored $A_t^\*$ from the land measurement and from $S_t$.
