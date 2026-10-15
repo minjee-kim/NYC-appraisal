@@ -1,0 +1,35 @@
+---
+title: "Desmoothing NYC Class 1 Appraisals"
+author: "Minjee Kim"
+format: html
+---
+
+## Learning about desmoothing
+
+Appraisal-based series are smoothed by partial adjustment. Classical methods invert the smoothing after the fact.
+
+- Geltner (1991, 1993): partial-adjustment model and AR(1) desmoothing formula.
+- Getmansky, Lo & Makarov (2004): MA(k) smoothing profile.
+
+This project writes the smoothing as the observation equation of a state-space model instead of inverting a finished index.
+
+## Looking at the data
+
+Cleaned Class 1 rolls live in `data/cleaned/class1_YYYY.csv`.
+
+```{r}
+#| echo: true
+library(tidyverse)
+
+# Example: load one year
+d <- read_csv("../data/cleaned/class1_2009.csv")
+glimpse(d)
+```
+
+## The method
+
+Latent price $P_t$ evolves as a random walk. The uncapped appraisal is a partial adjustment of that price. The roll records the censored version $A_t = \min(A_t^*, c_t)$. Land value and sparse sales identify $P_t$.
+
+## Analysis
+
+(To be filled in: simulation, Stan model, subset of real data, results.)
